@@ -11,6 +11,6 @@ namespace CustomerData.Api.Models
         public string Name { get; set; }
         public string ContactEmail { get; set; }
         public string MobileNumber { get; set; }
-        public ICollection<Transaction> Transactions { get; set; }
+        public ICollection<TransactionModel> Transactions { get; set; }
     }
 }

@@ -14,6 +14,11 @@ namespace CustomerData.Api.Data
         {
             CreateMap<Customer, CustomerModel>()
                 .ReverseMap();
+
+            CreateMap<Transaction, TransactionModel>()
+                 .ForMember(t => t.Customer, opt => opt.Ignore())
+                .ReverseMap();
+               
         } 
     }
 }
