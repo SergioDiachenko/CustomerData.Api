@@ -34,7 +34,7 @@ namespace CustomerData.Api.Data
 
         public async Task<Customer[]> GetAllCustomersAsync()
         {
-            return await _context.Customers.Include("Transactions").ToArrayAsync();
+            return await _context.Customers.Include(c => c.Transactions).ToArrayAsync();
         }
 
         public async Task<bool> SaveChangesAsync()

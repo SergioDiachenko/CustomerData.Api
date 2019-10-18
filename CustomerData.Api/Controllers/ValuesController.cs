@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using CustomerData.Api.Data;
 using CustomerData.Api.Data.Entities;
+using CustomerData.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace CustomerData.Api.Controllers
@@ -15,31 +17,24 @@ namespace CustomerData.Api.Controllers
         private readonly ICustomerRepository _repository;
         private readonly IMapper _mapper;
 
-        // GET api/values
-        public IEnumerable<string> Get()
+        public ValuesController(ICustomerRepository repository, IMapper mapper)
         {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/values/5
-        public string Get(int id)
-        {
-            return "value";
+            _repository = repository;
+            _mapper = mapper;
         }
 
         // POST api/values
-        public void Post([FromBody]string value)
+        public void Post([FromBody]CustomerModel model)
         {
-        }
+            try
+            {
+                
+            }
+            catch (Exception)
+            {
 
-        // PUT api/values/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
-        public void Delete(int id)
-        {
+                throw;
+            }
         }
     }
 }
