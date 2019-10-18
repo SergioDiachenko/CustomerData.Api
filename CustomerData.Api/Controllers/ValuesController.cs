@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CustomerData.Api.Data;
+using CustomerData.Api.Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,6 +11,7 @@ namespace CustomerData.Api.Controllers
 {
     public class ValuesController : ApiController
     {
+        private readonly ICustomerRepository _repository;
         // GET api/values
         public IEnumerable<string> Get()
         {
