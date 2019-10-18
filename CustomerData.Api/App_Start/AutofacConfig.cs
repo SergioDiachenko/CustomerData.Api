@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Integration.WebApi;
+using AutoMapper;
 using CustomerData.Api.Data;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,15 @@ namespace CustomerData.Api.App_Start
 
         public static void RegisterServices(ContainerBuilder builder)
         {
+            var config = new MapperConfiguration(configuration =>
+            {
+                configuration.AddProfile(new CustomerMappingProfile());
+            });
+
+            builder.RegisterInstance(config.CreateMapper())
+                .As<IMapper>()
+                .SingleInstance();
+
             builder.RegisterType<CustomerDataContext>().InstancePerRequest();
 
             builder.RegisterType<CustomerRepository>().As<ICustomerRepository>().InstancePerRequest();
