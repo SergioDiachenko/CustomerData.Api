@@ -2,6 +2,7 @@
 using CustomerData.Api.Data;
 using CustomerData.Api.Data.Entities;
 using CustomerData.Api.Models;
+using Microsoft.Web.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,12 +14,14 @@ using System.Web.Http;
 
 namespace CustomerData.Api.Controllers
 {
-    public class ValuesController : ApiController
+    [ApiVersion("1.0")]
+    [RoutePrefix("api/v{version:apiVersion}/customers")]
+    public class CustomersController : ApiController
     {
         private readonly ICustomerRepository _repository;
         private readonly IMapper _mapper;
 
-        public ValuesController(ICustomerRepository repository, IMapper mapper)
+        public CustomersController(ICustomerRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
@@ -40,7 +43,7 @@ namespace CustomerData.Api.Controllers
                     var customer = _repository.GetCustomerByIdAsync(model.Id);
                     if (customer == null) return NotFound();
 
-                    return Ok(customer);
+                    return Ok(_mapper.Map<Customer>(customer));
                 }
 
                 // Invalid Email
@@ -51,7 +54,7 @@ namespace CustomerData.Api.Controllers
                     var customer = _repository.GetCustomerByEmailAsync(model.ContactEmail);
                     if (customer == null) return NotFound();
 
-                    return Ok(customer);
+                    return Ok(_mapper.Map<Customer>(customer));
                 }
 
                 return BadRequest();

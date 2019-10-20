@@ -1,4 +1,5 @@
 ﻿using CustomerData.Api.App_Start;
+using Microsoft.Web.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,13 @@ namespace CustomerData.Api
         {
             // Web API configuration and services
             AutofacConfig.Register();
+
+            config.AddApiVersioning(setup =>
+            {
+                setup.DefaultApiVersion = new ApiVersion(1, 0);
+                setup.AssumeDefaultVersionWhenUnspecified = true;
+                setup.ReportApiVersions = true;
+            });
 
             // Web API routes
             config.MapHttpAttributeRoutes();
