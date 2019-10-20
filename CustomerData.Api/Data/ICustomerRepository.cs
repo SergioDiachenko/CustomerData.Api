@@ -11,7 +11,8 @@ namespace CustomerData.Api.Data
     {
         void AddCustomer(Customer customer);
         void AddTransaction(Transaction transaction);
-        Task<Customer> GetCustomerAsync(int id);
+        Task<Customer> GetCustomerByIdAsync(int customerId);
+        Task<Customer> GetCustomerByEmailAsync(string email);
         Task<Customer[]> GetAllCustomersAsync();
         Task<bool> SaveChangesAsync();
     }

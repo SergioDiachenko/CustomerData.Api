@@ -27,9 +27,14 @@ namespace CustomerData.Api.Data
             _context.Transactions.Add(transaction);
         }
 
-        public async Task<Customer> GetCustomerAsync(int customerId)
+        public async Task<Customer> GetCustomerByIdAsync(int customerId)
         {
              return await _context.Customers.Include(c => c.Transactions).FirstOrDefaultAsync(c => c.Id == customerId);
+        }
+
+        public async Task<Customer> GetCustomerByEmailAsync(string email)
+        {
+            return await _context.Customers.Include(c => c.Transactions).FirstOrDefaultAsync(c => c.ContactEmail == email);
         }
 
         public async Task<Customer[]> GetAllCustomersAsync()

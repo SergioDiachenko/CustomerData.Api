@@ -4,6 +4,7 @@ using CustomerData.Api.Data.Entities;
 using CustomerData.Api.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -24,17 +25,43 @@ namespace CustomerData.Api.Controllers
         }
 
         // POST api/values
-        public void Post([FromBody]CustomerModel model)
+        public IHttpActionResult Post([FromBody]CustomerModel model)
         {
             try
             {
-                
+                // No inquiry criteria
+                if (string.IsNullOrEmpty(model.ContactEmail) && model.Id == 0) return BadRequest("No inquiry criteria");
+
+                // Invalid Customer ID
+                if (model.Id > 0)
+                {
+                    if (model.Id > 999999999) return BadRequest("Invalid Customer ID");
+
+                    var customer = _repository.GetCustomerByIdAsync(model.Id);
+                    if (customer == null) return NotFound();
+
+                    return Ok(customer);
+                }
+
+                // Invalid Email
+                if (!string.IsNullOrEmpty(model.ContactEmail))
+                {
+                    if (!model.IsValidEmail()) return BadRequest("Invalid Email");
+
+                    var customer = _repository.GetCustomerByEmailAsync(model.ContactEmail);
+                    if (customer == null) return NotFound();
+
+                    return Ok(customer);
+                }
+
+                return BadRequest();
             }
             catch (Exception)
             {
-
-                throw;
+                return BadRequest();
             }
+
+            
         }
     }
 }
