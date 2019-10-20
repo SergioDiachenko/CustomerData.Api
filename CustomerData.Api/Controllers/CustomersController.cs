@@ -28,7 +28,7 @@ namespace CustomerData.Api.Controllers
         }
 
         // POST api/values
-        public IHttpActionResult Post([FromBody]CustomerModel model)
+        public async Task<IHttpActionResult> Post([FromBody]CustomerModel model)
         {
             try
             {
@@ -40,10 +40,10 @@ namespace CustomerData.Api.Controllers
                 {
                     if (model.Id > 999999999) return BadRequest("Invalid Customer ID");
 
-                    var customer = _repository.GetCustomerByIdAsync(model.Id);
+                    var customer = await _repository.GetCustomerByIdAsync(model.Id);
                     if (customer == null) return NotFound();
 
-                    return Ok(_mapper.Map<Customer>(customer));
+                    return Ok(_mapper.Map<CustomerModel>(customer));
                 }
 
                 // Invalid Email
@@ -51,10 +51,10 @@ namespace CustomerData.Api.Controllers
                 {
                     if (!model.IsValidEmail()) return BadRequest("Invalid Email");
 
-                    var customer = _repository.GetCustomerByEmailAsync(model.ContactEmail);
+                    var customer = await _repository.GetCustomerByEmailAsync(model.ContactEmail);
                     if (customer == null) return NotFound();
 
-                    return Ok(_mapper.Map<Customer>(customer));
+                    return Ok(_mapper.Map<CustomerModel>(customer));
                 }
 
                 return BadRequest();
