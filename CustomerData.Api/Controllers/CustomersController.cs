@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
 using CustomerData.Api.Data;
-using CustomerData.Api.Data.Entities;
+using CustomerData.Api.Filters;
 using CustomerData.Api.Models;
 using Microsoft.Web.Http;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -27,44 +22,39 @@ namespace CustomerData.Api.Controllers
             _mapper = mapper;
         }
 
-        // POST api/values
-        public async Task<IHttpActionResult> Post([FromBody]CustomerModel model)
+        [HttpPost]
+        [ValidateModel]
+        public async Task<IHttpActionResult> CustomerInquiry([FromBody]CustomerModel model)
         {
             try
             {
-                // No inquiry criteria
-                if (string.IsNullOrEmpty(model.ContactEmail) && model.Id == 0) return BadRequest("No inquiry criteria");
 
-                // Invalid Customer ID
-                if (model.Id > 0)
+                if (ModelState.IsValid)
                 {
-                    if (model.Id > 999999999) return BadRequest("Invalid Customer ID");
+                    if (string.IsNullOrEmpty(model.ContactEmail) && !model.Id.HasValue)
+                    {
+                        return BadRequest("No inquiry criteria");
+                    }
 
-                    var customer = await _repository.GetCustomerByIdAsync(model.Id);
-                    if (customer == null) return NotFound();
+                    var customer = model.Id.HasValue
+                        ? await _repository.GetCustomerByIdAsync(model.Id.Value)
+                        : await _repository.GetCustomerByEmailAsync(model.ContactEmail);
 
-                    return Ok(_mapper.Map<CustomerModel>(customer));
-                }
-
-                // Invalid Email
-                if (!string.IsNullOrEmpty(model.ContactEmail))
-                {
-                    if (!model.IsValidEmail()) return BadRequest("Invalid Email");
-
-                    var customer = await _repository.GetCustomerByEmailAsync(model.ContactEmail);
-                    if (customer == null) return NotFound();
+                    if (customer == null)
+                    {
+                        return NotFound();
+                    }
 
                     return Ok(_mapper.Map<CustomerModel>(customer));
                 }
 
                 return BadRequest();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine("There was an error on '{0}' invocation: {1}", nameof(CustomerInquiry), ex);
                 return BadRequest();
             }
-
-            
         }
     }
 }

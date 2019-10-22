@@ -1,4 +1,5 @@
 ﻿using CustomerData.Api.App_Start;
+using CustomerData.Api.Filters;
 using Microsoft.Web.Http;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace CustomerData.Api
                 setup.AssumeDefaultVersionWhenUnspecified = true;
                 setup.ReportApiVersions = true;
             });
+
+            config.Filters.Add(new ValidateModelAttribute());
 
             // Web API routes
             config.MapHttpAttributeRoutes();
